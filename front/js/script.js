@@ -2,26 +2,20 @@
 // 2 parcourir les produits
 // 3 insérer chaque produit dans le DOM de la page d'accueil
 
-const resultats = await fetch("http://localhost:3000/api/products");
-const json = await resultats.json();
+const response = await fetch("http://localhost:3000/api/products");
+const products = await response.json();
 
-for (let i = 0 ; i < json.length ; i++) {
-    const id = json[i]["_id"];
-    const image_description = json[i]["altTxt"];
-    const colors = json[i]["colors"];
-    const product_description = json[i]["description"];
-    const image = json[i]["imageUrl"];
-    const name = json[i]["name"];
-    const price = json[i]["price"];
+for (let i = 0 ; i < products.length ; i++) {
+    const product = products[i]
 
     const html_produit = `
-    <a href="./product.html?id=${id}">
+    <a href="./product.html?id=${product._id}">
         <article>
-            <img src="${image}" alt="${image_description}">
-            <h3 class="productName">${name}</h3>
-            <p class="productDescription">${product_description}</p>
-            <p class="productColors"><b>Couleurs :</b> ${colors}</p>
-            <p class="productPrice"><b>Prix :</b> ${price} €</p>
+            <img src="${product.imageUrl}" alt="${product.altTxt}">
+            <h3 class="productName">${product.name}</h3>
+            <p class="productDescription">${product.description}</p>
+            <p class="productColors"><b>Couleurs :</b> ${product.colors}</p>
+            <p class="productPrice"><b>Prix :</b> ${product.price} €</p>
         </article>
     </a>`;
 
