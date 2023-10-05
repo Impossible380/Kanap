@@ -6,7 +6,7 @@ const response = await fetch("http://localhost:3000/api/products");
 const products = await response.json();
 
 for (let i = 0 ; i < products.length ; i++) {
-    const product = products[i]
+    const product = products[i];
 
     const html_produit = `
     <a href="./product.html?id=${product._id}">
@@ -20,9 +20,6 @@ for (let i = 0 ; i < products.length ; i++) {
     </a>`;
 
     document.getElementById("items").innerHTML += html_produit;
-
-    // console.log(html_produit);
 };
 
-console.log(json);
-// console.log(json[0]["_id"]);
+console.log(products);
