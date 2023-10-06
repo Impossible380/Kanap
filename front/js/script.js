@@ -21,5 +21,3 @@ for (let i = 0 ; i < products.length ; i++) {
 
     document.getElementById("items").innerHTML += html_produit;
 };
-
-console.log(products);
