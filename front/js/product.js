@@ -17,17 +17,52 @@ array.join(séparateur) : concaténer tous les éléments dans une seule chaîne
 // http://localhost:3000/api/products/order
 
 
+// Début onCartClick
+function onCartClick() {
+    const item = {};
+
+    item.id = id;
+    item.quantity = parseInt(quantityInput.value);
+    item.color = colorInput.value;
+
+    console.log(item);
+
+    let ajout = "tout";
+
+    for (let i = 0 ; i < cart.length ; i++) {
+        if ((item.quantity < 1 || item.quantity > 100) || item.color == "") {
+            ajout = "rien";
+        };
+
+        if (ajout != "rien") {
+            if (cart[i].id == item.id && cart[i].color == item.color) {
+                ajout = "quantité";
+                cart[i].quantity += item.quantity;
+            };
+        };
+    };
+
+    if (ajout == "tout") {
+        cart.push(item);
+    };
+
+    console.log(ajout);
+    console.log(cart);
+
+    localStorage.cart = JSON.stringify(cart);
+    
+    console.log(localStorage);
+};
+// Fin onCartClick
+
+
 const current_url = document.location.search;
 const searchParams_product = new URLSearchParams(current_url);
-const id = searchParams_product.get("id")
+const id = searchParams_product.get("id");
 
-const response = await fetch("http://localhost:3000/api/products");
-const products = await response.json();
+const response = await fetch(`http://localhost:3000/api/products/${id}`);
+const product = await response.json();
 
-const product = products
-    .find(function (p) {
-        return p._id == id
-    });
 
 document.querySelector(".item__img").innerHTML = `
 <img src="${product.imageUrl}" alt="${product.altTxt}">`;
@@ -39,13 +74,11 @@ document.querySelector("#colors").innerHTML += product.colors
     .map(function (color) {
         return `<option value="${color}">${color}</option>`
     })
-    .join("")
+    .join("");
 
 
 
 
-//On pointe sur l'élément de message
-// const espaceMessage = document.getElementById("message");
 //On pointe sur l'élément de bouton
 const addToCart = document.getElementById("addToCart");
 //On pointe sur l'élément de champ de saisie de la quantité
@@ -54,60 +87,23 @@ const quantityInput = document.getElementById("quantity");
 const colorInput = document.getElementById("colors");
 
 
-let quantity;
-function onConvertQuantity(){  
-  
-    //On récupère la saisie de l'année et on transforme le texte en nombre entier
-    quantity = parseInt(quantityInput.value);
-    //Si la saisie n'est pas un nombre, on affiche un message d'erreur
-    if(isNaN(quantity)){
-      alert("Ceci n'est pas un nombre");
-      return;
-    }
-    // const mois = annee * params[8];
-    
-    // ANALYSER ICI AVEC CONSOLE LOG
-    // Analyser la variable quantity
-    console.log("Quantité : " + quantity);
-    // FIN ANALYSE
-    
-    // espaceMessage.innerHTML = "Quantité : " + quantity;
-    return quantity
+// localStorage.clear();
+
+if (localStorage.length == 0 || localStorage.cart.length == 0) {
+    localStorage.cart = '[]'
 }
 
+const cart = JSON.parse(localStorage.cart);
 
-let color;
-function onConvertColor(){  
-  
-    //On récupère la saisie de l'année et on transforme le texte en nombre entier
-    color = colorInput.value;
-    //Si la saisie n'est pas un nombre, on affiche un message d'erreur
-    /* if(isNaN(color)){
-      alert("Ceci n'est pas un chaîne de caractères");
-      return;
-    } */
-    // const mois = annee * params[8];
-    
-    // ANALYSER ICI AVEC CONSOLE LOG
-    // Analyser la variable quantity
-    console.log("Couleur : " + color);
-    // FIN ANALYSE
-    
-    // espaceMessage.innerHTML = "Color : " + color;
-    return color
-}
-  
-  
-  
-//On écoute l'action de click sur le onConvert et on appelle la fonction onConvert
-addToCart.addEventListener('click', onConvertQuantity);
-addToCart.addEventListener('click', onConvertColor);
+addToCart.addEventListener('click', onCartClick);
 
 
-localStorage.id = id
-// localStorage.quantity = quantity
-localStorage.quantity = onConvertQuantity
-// localStorage.color = color
-localStorage.color = onConvertColor
+// number (examples : int, float), string, array, object (example : dict), function
 
-console.log(localStorage)
+
+/* Problèmes :
+
+1) S'il n'y a rien dans cart, ça va planter
+2) On peut avoir plusieurs fois le couple id / couleur dans le panier
+
+*/
