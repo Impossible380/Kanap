@@ -25,29 +25,19 @@ function onCartClick() {
     item.quantity = parseInt(quantityInput.value);
     item.color = colorInput.value;
 
-    console.log(item);
-
-    let ajout = "tout";
-
-    for (let i = 0 ; i < cart.length ; i++) {
-        if ((item.quantity < 1 || item.quantity > 100) || item.color == "") {
-            ajout = "rien";
-        };
-
-        if (ajout != "rien") {
-            if (cart[i].id == item.id && cart[i].color == item.color) {
-                ajout = "quantité";
-                cart[i].quantity += item.quantity;
-            };
-        };
+    if ((item.quantity < 1 || item.quantity > 100) || item.color == "") {
+        return;
     };
 
-    if (ajout == "tout") {
+    const cart_item_index = cart.findIndex(function(cart_item) {
+        return cart_item.id == item.id && cart_item.color == item.color;
+    });
+
+    if (cart_item_index === -1) {
         cart.push(item);
+    } else {
+        cart[cart_item_index].quantity += item.quantity;
     };
-
-    console.log(ajout);
-    console.log(cart);
 
     localStorage.cart = JSON.stringify(cart);
     
