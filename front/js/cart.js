@@ -1,3 +1,16 @@
+// Début onDeleteClick
+/* function onDeleteClick() {
+    const article = document.querySelectorAll("article.cart__item");
+    console.log(article);
+    console.log(deleteOfCartElement);
+    const supprimer = deleteOfCartElement.closest("article.cart__item");
+    console.log(supprimer);
+}; */
+// Fin onDeleteClick
+
+
+
+
 // localStorage.clear();
 
 if (localStorage.length == 0 || localStorage.cart.length == 0) {
@@ -6,7 +19,7 @@ if (localStorage.length == 0 || localStorage.cart.length == 0) {
 
 const cart = JSON.parse(localStorage.cart);
 
-console.log(cart);
+// console.log(cart);
 
 
 let total_quantity = 0;
@@ -14,7 +27,7 @@ let total_price = 0;
 
 for (let i = 0 ; i < cart.length ; i++) {
     const item = cart[i];
-    console.log(item);
+    // console.log(item);
 
     const response = await fetch(`http://localhost:3000/api/products/${item.id}`);
     const product = await response.json();
@@ -50,9 +63,39 @@ document.getElementById("totalQuantity").innerHTML = total_quantity;
 document.getElementById("totalPrice").innerHTML = total_price;
 
 
-const deleteOfCart = document.querySelector(".deleteItem");
+const deleteOfCart = document.querySelectorAll("p.deleteItem");
+// console.log(deleteOfCart);
 
-// deleteOfCart.addEventListener('click', onDeleteClick);
+for (let i = 0 ; i < cart.length ; i++) {
+    const deleteOfCartElement = deleteOfCart[i];
+    // console.log(deleteOfCartElement);
+    deleteOfCartElement.addEventListener('click', function() {
+        /* const article = document.querySelectorAll("article.cart__item");
+        console.log(article);
+        console.log(deleteOfCartElement); */
+
+        const article = deleteOfCartElement.closest("article.cart__item");
+        const article_id = article.dataset.id;
+        console.log(article_id);
+
+        const recherche = cart.find(function(cart_item) {
+            return cart_item.id == article_id;
+        });
+
+        console.log(recherche);
+
+        if (recherche) {
+            console.log("Vrai");
+        } else {
+            console.log("Vrai");
+        };
+    });
+};
+
+/* deleteOfCart.addEventListener('change', function(i) {
+    console.log(i);
+}); */
+
 
 
 
