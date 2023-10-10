@@ -56,11 +56,11 @@ const product = await response.json();
 
 document.querySelector(".item__img").innerHTML = `
 <img src="${product.imageUrl}" alt="${product.altTxt}">`;
-document.querySelector("#title").innerHTML = product.name;
-document.querySelector("#price").innerHTML = product.price;
-document.querySelector("#description").innerHTML = product.description;
+document.getElementById("title").innerHTML = product.name;
+document.getElementById("price").innerHTML = product.price;
+document.getElementById("description").innerHTML = product.description;
 
-document.querySelector("#colors").innerHTML += product.colors
+document.getElementById("colors").innerHTML += product.colors
     .map(function (color) {
         return `<option value="${color}">${color}</option>`
     })

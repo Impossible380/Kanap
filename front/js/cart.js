@@ -1,6 +1,16 @@
+// localStorage.clear();
+
+if (localStorage.length == 0 || localStorage.cart.length == 0) {
+    localStorage.cart = '[]'
+}
+
 const cart = JSON.parse(localStorage.cart);
 
 console.log(cart);
+
+
+let total_quantity = 0;
+let total_price = 0;
 
 for (let i = 0 ; i < cart.length ; i++) {
     const item = cart[i];
@@ -9,7 +19,7 @@ for (let i = 0 ; i < cart.length ; i++) {
     const response = await fetch(`http://localhost:3000/api/products/${item.id}`);
     const product = await response.json();
     
-    document.querySelector("#cart__items").innerHTML += `
+    document.getElementById("cart__items").innerHTML += `
     <article class="cart__item" data-id="${item.id}" data-color="${item.color}">
         <div class="cart__item__img">
             <img src="${product.imageUrl}" alt="${product.altTxt}">
@@ -31,8 +41,18 @@ for (let i = 0 ; i < cart.length ; i++) {
             </div>
         </div>
     </article>`;
+
+    total_quantity += item.quantity;
+    total_price += item.quantity * product.price;
 }
 
+document.getElementById("totalQuantity").innerHTML = total_quantity;
+document.getElementById("totalPrice").innerHTML = total_price;
+
+
+const deleteOfCart = document.querySelector(".deleteItem");
+
+// deleteOfCart.addEventListener('click', onDeleteClick);
 
 
 
