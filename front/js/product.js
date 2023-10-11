@@ -84,6 +84,8 @@ if (localStorage.length == 0 || localStorage.cart.length == 0) {
 }
 
 const cart = JSON.parse(localStorage.cart);
+console.log(localStorage.cart);
+console.log(cart)
 
 addToCart.addEventListener('click', onCartClick);
 
