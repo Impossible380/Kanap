@@ -1,27 +1,12 @@
-// Début onDeleteClick
-/* function onDeleteClick() {
-    const article = document.querySelectorAll("article.cart__item");
-    console.log(article);
-    console.log(deleteOfCartElement);
-    const supprimer = deleteOfCartElement.closest("article.cart__item");
-    console.log(supprimer);
-}; */
-// Fin onDeleteClick
-
-
-
-
 // localStorage.clear();
+
+const products = []
 
 if (localStorage.length == 0 || localStorage.cart.length == 0) {
     localStorage.cart = '[]';
 };
 
-const cart = JSON.parse(localStorage.cart);
-
-
-console.log(localStorage.cart);
-console.log(cart);
+let cart = JSON.parse(localStorage.cart);
 
 
 let articles_list = []
@@ -30,14 +15,19 @@ let total_quantity = 0;
 let total_price = 0;
 
 for (let i = 0 ; i < cart.length ; i++) {
-    /* console.log(cart);
-    console.log(localStorage.cart); */
-
     const item = cart[i];
-    // console.log(item);
 
-    const response = await fetch(`http://localhost:3000/api/products/${item.id}`);
-    const product = await response.json();
+    let product = products.find(function(p, index) {
+        return p._id === item.id
+    });
+
+    if (product === undefined) {
+        const response = await fetch(`http://localhost:3000/api/products/${item.id}`);
+        product = await response.json();
+        products.push(product);
+    };
+
+    console.log(products);
 
     articles_list.push(`
     <article class="cart__item" data-id="${item.id}" data-color="${item.color}">
@@ -68,66 +58,61 @@ for (let i = 0 ; i < cart.length ; i++) {
 
 let articles_join = articles_list;
 articles_join.join();
-console.log(articles_join);
 document.getElementById("cart__items").innerHTML = articles_join;
 
 document.getElementById("totalQuantity").innerHTML = total_quantity;
 document.getElementById("totalPrice").innerHTML = total_price;
 
-
 const changeQuantity = document.querySelectorAll(".itemQuantity");
-console.log(changeQuantity);
-
-
 const deleteOfCart = document.querySelectorAll(".deleteItem");
-console.log(deleteOfCart);
 
 for (let i = 0 ; i < cart.length ; i++) {
-    /* console.log(cart);
-    console.log(localStorage.cart); */
-    
-    // const item = cart[i];
-    console.log(cart[i]);
-
-
     changeQuantity[i].addEventListener('change', function() {
-        cart[i].quantity = parseInt(this.value);
-        console.log(cart[i]);
+        const item = cart[i];
+        
+        let product = products.find(function(p, index) {
+            return p._id === item.id
+        });
+
+        let ancient_quantity = item.quantity;
+        item.quantity = parseInt(this.value);
+
         localStorage.cart = JSON.stringify(cart);
+        console.log({cart:cart});
+
+        total_quantity += item.quantity - ancient_quantity;
+        total_price += (item.quantity - ancient_quantity) * product.price;
+
+        document.getElementById("totalQuantity").innerHTML = total_quantity;
+        document.getElementById("totalPrice").innerHTML = total_price;
     });
 
 
-    const deleteOfCartElement = deleteOfCart[i];
-    /* console.log(deleteOfCart);
-    console.log(deleteOfCartElement); */
+    deleteOfCart[i].addEventListener('click', function() {
+        const item = cart[i];
 
-    const article = deleteOfCartElement.closest("article.cart__item");
-    console.log(article);
-
-    article.addEventListener('click', function() {
-        console.log(article);
-    
-        cart.splice(i, 1);
-        console.log(cart);
-        localStorage.cart = JSON.stringify(cart);
-        console.log(localStorage.cart);
+        cart = cart.filter(function(item, index) {
+            return index !== i
+        });
         
-        console.log(articles_list);
-        articles_list.splice(i, 1);
-        console.log(articles_list);
-        articles_join = articles_list;
-        articles_join.join();
-        console.log(articles_join);
-        document.getElementById("cart__items").innerHTML = articles_join;
+        let product = products.find(function(p, index) {
+            return p._id === item.id
+        });
+
+        localStorage.cart = JSON.stringify(cart);
+        console.log({cart:cart});
+
+        const article = deleteOfCart[i].closest("article.cart__item");
+        console.log(article);
+        article.remove();
+
+        total_quantity -= item.quantity;
+        total_price -= item.quantity * product.price;
+
+        document.getElementById("totalQuantity").innerHTML = total_quantity;
+        document.getElementById("totalPrice").innerHTML = total_price;
     });
 };
-
-
-
-
-/* deleteOfCart.addEventListener('change', function(i) {
-    console.log(i);
-}); */
 
 
 
