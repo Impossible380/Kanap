@@ -2,10 +2,12 @@
 
 const products = []
 
+// On ajoute des crochets dans un string dans le cart du localStorage, sinon une erreur indiquera que localStorage.cart est indéfini
 if (localStorage.length == 0 || localStorage.cart.length == 0) {
     localStorage.cart = '[]';
 };
 
+// On affecte à la variable cart la conversion du string de localStorage.cart en object
 let cart = JSON.parse(localStorage.cart);
 
 
@@ -77,6 +79,7 @@ for (let i = 0 ; i < cart.length ; i++) {
         let ancient_quantity = item.quantity;
         item.quantity = parseInt(this.value);
 
+        // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
         localStorage.cart = JSON.stringify(cart);
         console.log({cart:cart});
 
@@ -99,6 +102,7 @@ for (let i = 0 ; i < cart.length ; i++) {
             return p._id === item.id
         });
 
+        // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
         localStorage.cart = JSON.stringify(cart);
         console.log({cart:cart});
 

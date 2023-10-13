@@ -39,6 +39,7 @@ function onCartClick() {
         cart[cart_item_index].quantity += item.quantity;
     };
 
+    // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
     localStorage.cart = JSON.stringify(cart);
     
     console.log(localStorage);
@@ -79,10 +80,12 @@ const colorInput = document.getElementById("colors");
 
 // localStorage.clear();
 
+// On ajoute des crochets dans un string dans le cart du localStorage, sinon une erreur indiquera que localStorage.cart est indéfini
 if (localStorage.length == 0 || localStorage.cart.length == 0) {
     localStorage.cart = '[]'
 }
 
+// On affecte à la variable cart la conversion du string de localStorage.cart en object
 const cart = JSON.parse(localStorage.cart);
 console.log(localStorage.cart);
 console.log(cart)
