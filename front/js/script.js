@@ -20,4 +20,4 @@ for (let i = 0 ; i < products.length ; i++) {
     </a>`;
 
     document.getElementById("items").innerHTML += html_produit;
-};
+}

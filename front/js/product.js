@@ -27,7 +27,7 @@ function onCartClick() {
 
     if ((item.quantity < 1 || item.quantity > 100) || item.color == "") {
         return;
-    };
+    }
 
     const cart_item_index = cart.findIndex(function(cart_item) {
         return cart_item.id == item.id && cart_item.color == item.color;
@@ -37,13 +37,13 @@ function onCartClick() {
         cart.push(item);
     } else {
         cart[cart_item_index].quantity += item.quantity;
-    };
+    }
 
     // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
     localStorage.cart = JSON.stringify(cart);
     
     console.log(localStorage);
-};
+}
 // Fin onCartClick
 
 
@@ -70,11 +70,11 @@ document.getElementById("colors").innerHTML += product.colors
 
 
 
-//On pointe sur l'élément de bouton
+// On pointe sur l'élément de bouton
 const addToCart = document.getElementById("addToCart");
-//On pointe sur l'élément de champ de saisie de la quantité
+// On pointe sur l'élément de champ de saisie de la quantité
 const quantityInput = document.getElementById("quantity");
-//On pointe sur l'élément de champ de saisie de la couleur
+// On pointe sur l'élément de champ de saisie de la couleur
 const colorInput = document.getElementById("colors");
 
 
@@ -88,17 +88,9 @@ if (localStorage.length == 0 || localStorage.cart.length == 0) {
 // On affecte à la variable cart la conversion du string de localStorage.cart en object
 const cart = JSON.parse(localStorage.cart);
 console.log(localStorage.cart);
-console.log(cart)
+console.log(cart);
 
 addToCart.addEventListener('click', onCartClick);
 
 
 // number (examples : int, float), string, array, object (example : dict), function
-
-
-/* Problèmes :
-
-1) S'il n'y a rien dans cart, ça va planter
-2) On peut avoir plusieurs fois le couple id / couleur dans le panier
-
-*/
