@@ -11,12 +11,14 @@ if (localStorage.length == 0 || localStorage.cart.length == 0) {
 let cart = JSON.parse(localStorage.cart);
 
 
-let articles_list = [];
+// let articles_list = [];
 
 // On crée deux variables pour les totaux de la quantité et du prix
 let total_quantity = 0;
 let total_price = 0;
 
+
+// Début de la boucle d'affichage des produits
 for (let i = 0 ; i < cart.length ; i++) {
     const item = cart[i];
 
@@ -32,7 +34,7 @@ for (let i = 0 ; i < cart.length ; i++) {
 
     console.log(products);
 
-    articles_list.push(`
+    /* articles_list.push(`
     <article class="cart__item" data-id="${item.id}" data-color="${item.color}">
         <div class="cart__item__img">
             <img src="${product.imageUrl}" alt="${product.altTxt}">
@@ -53,31 +55,55 @@ for (let i = 0 ; i < cart.length ; i++) {
                 </div>
             </div>
         </div>
-    </article>`);
+    </article>`); */
+
+    document.getElementById("cart__items").innerHTML += `
+    <article class="cart__item" data-id="${item.id}" data-color="${item.color}">
+        <div class="cart__item__img">
+            <img src="${product.imageUrl}" alt="${product.altTxt}">
+        </div>
+        <div class="cart__item__content">
+            <div class="cart__item__content__description">
+                <h2>${product.name}</h2>
+                <p>${item.color}</p>
+                <p>${product.price} €</p>
+            </div>
+            <div class="cart__item__content__settings">
+                <div class="cart__item__content__settings__quantity">
+                    <p>Qté : </p>
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${item.quantity}">
+                </div>
+                <div class="cart__item__content__settings__delete">
+                    <p class="deleteItem">Supprimer</p>
+                </div>
+            </div>
+        </div>
+    </article>`
 
     // On ajoute au total de la quantité la quantité de l'article et à celui du prix le prix de l'article multiplié par la quantité de celui-ci
     total_quantity += item.quantity;
     total_price += item.quantity * product.price;
 }
+// Fin de la boucle d'affichage des produits
 
-let articles_join = articles_list;
-articles_join.join();
-document.getElementById("cart__items").innerHTML = articles_join;
 
 // On affiche les totaux de la quantité et du prix
 document.getElementById("totalQuantity").innerHTML = total_quantity;
 document.getElementById("totalPrice").innerHTML = total_price;
 
+
 const changeQuantity = document.querySelectorAll(".itemQuantity");
 const deleteOfCart = document.querySelectorAll(".deleteItem");
 
-// Début boucle de la modification et de la suppression des produits
+
+// Début boucle de la modification des quantités et de la suppression des produits
 for (let i = 0 ; i < cart.length ; i++) {
     const item = cart[i];
+
     // Début changeQuantity
     changeQuantity[i].addEventListener('change', function() {
         let product = products.find(function(p, index) {
-            return p._id === item.id
+            return p._id === item.id;
         });
 
         // On affecte l'ancienne quantité dans une nouvelle variable et la nouvelle dans la propriété quantity de l'item
@@ -100,14 +126,15 @@ for (let i = 0 ; i < cart.length ; i++) {
 
 
     const article = deleteOfCart[i].closest("article.cart__item");
+    
     // Début deleteOfCart
     deleteOfCart[i].addEventListener('click', function() {
         cart = cart.filter(function(item_filter, index) {
-            return item_filter.id !== item.id;
+            return item_filter.id !== item.id || item_filter.color !== item.color;
         });
         
         let product = products.find(function(p, index) {
-            return p._id === item.id
+            return p._id === item.id;
         });
 
         // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
@@ -127,72 +154,94 @@ for (let i = 0 ; i < cart.length ; i++) {
     });
     // Fin deleteOfCart
 }
-// Fin boucle de la modification et de la suppression des produits
+// Fin boucle de la modification des quantités et de la suppression des produits
 
 
-const firstName = document.getElementById('firstName');
-let firstNameRegexTest = false;
+const changeFormInput = document.querySelectorAll(".cart__order__form__question input");
+const formInputRegexList = [/^[a-zA-Z- ]+$/g, /^[a-zA-Z- ]+$/g, /^[a-zA-Z0-9- ]+$/g, /^[a-zA-Z0-9- ]+$/g,
+/^[a-zA-Z0-9- ]+@[a-zA-Z- ]+\.[a-zA-Z- ]+$/g];
 
-firstName.addEventListener('change', function(event) {
-    const firstNameRegex = /\d+/g;
-    firstNameRegexTest = firstNameRegex.test(firstName.value);
-    console.log("Test regex prénom", firstName.value, firstNameRegexTest);
-});
+let formInputRegexTestList = []
 
+// Début boucle de la modification des champs de saisie
+for (let i = 0 ; i < changeFormInput.length ; i++) {
+    console.log(formInputRegexList[i]);
 
-const lastName = document.getElementById('lastName');
-let lastNameRegexTest = false;
+    formInputRegexTestList.push(false);
+    formInputRegexTestList[i] = formInputRegexList[i].test(changeFormInput[i].value);
 
-lastName.addEventListener('change', function(event) {
-    const lastNameRegex = /\d+/g;
-    lastNameRegexTest = lastNameRegex.test(lastName.value);
-    console.log("Test regex nom", lastName.value, lastNameRegexTest);
-});
-
-
-const address = document.getElementById('address');
-let addressRegexTest = false;
-
-address.addEventListener('change', function(event) {
-    const addressRegex = /.+/g;
-    addressRegexTest = addressRegex.test(address.value);
-    console.log("Test regex adresse", address.value, addressRegexTest);
-});
-
-
-const city = document.getElementById('city');
-let cityRegexTest = false;
-
-city.addEventListener('change', function(event) {
-    const cityRegex = /.+/g;
-    cityRegexTest = cityRegex.test(city.value);
-    console.log("Test regex ville", city.value, cityRegexTest);
-});
-
-
-const email = document.getElementById('email');
-let emailRegexTest = false;
-
-email.addEventListener('change', function(event) {
-    const emailRegex = /.+@.+\..+/g;
-    emailRegexTest = emailRegex.test(email.value);
-    console.log("Test regex email", email.value, emailRegexTest);
-});
+    // Début changeFormInput
+    changeFormInput[i].addEventListener('change', function() {
+        formInputRegexTestList[i] = formInputRegexList[i].test(changeFormInput[i].value);
+        console.log("Test regex prénom", changeFormInput[i].value, formInputRegexTestList[i]);
+    });
+    // Fin changeFormInput
+}
+// Fin boucle de la modification des champs de saisie
 
 
 // On pointe sur l'élément de bouton
 const validCommand = document.getElementById("order");
 
 // Début validCommand
-validCommand.addEventListener('click', function() {
-    // On pointe sur l'élément de champ de saisie de la couleur
-    if (!firstNameRegexTest && !lastNameRegexTest && addressRegexTest && cityRegexTest && emailRegexTest) {
+validCommand.addEventListener('click', async function(event) {
+    event.preventDefault();
+
+    if (formInputRegexTestList.every((element) => element === true)) {
         console.log("Coordonnées validées");
+
+        const firstName = document.getElementById("firstName");
+        const lastName = document.getElementById("lastName");
+        const address = document.getElementById("address");
+        const city = document.getElementById("city");
+        const email = document.getElementById("email");
+
+        const response = await fetch("http://localhost:3000/api/products/order", {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                contact: {
+                    firstName: firstName.value,
+                    lastName: lastName.value,
+                    address: address.value,
+                    city: city.value,
+                    email: email.value
+                },
+                products: cart
+            })
+        });
+
+        console.log(response);
+        console.log(response.body);
+        console.log(response.body.contact);
+        console.log(response.body.products);
+
     } else {
         console.log("Coordonnées refutées");
     }
 });
 // Fin validCommand
+
+
+
+
+/* console.log("Coordonnées validées");
+    const response = await fetch("http://localhost:3000/api/products/order", {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            contact: {
+                firstName: 'Davy',
+                lastName: 'Gueudré',
+                address: '8 rue du poirier',
+                city: 'Orléans',
+                email: 'dgueudre@gmail.com'
+            },
+            products: ["415b7cacb65d43b2b5c1ff70f3393ad1"]
+        })
+    });
+*/
+
 
 
 /*
@@ -208,20 +257,4 @@ validCommand.addEventListener('click', function() {
 
 
 // Lien vidéo : https://www.youtube.com/watch?v=ZocfMM0qofA
-
-
-
-
-/* Problèmes
-
-1) Si le panier est vide, ça va planter sur cette page.
-
-*/
-
-
-/* A faire
-
-1) Gérer la suppresion
-2) Gérer la modification
-
-*/
+// Lien RegEx : https://cheatography.com/davechild/cheat-sheets/regular-expressions/
