@@ -196,6 +196,10 @@ validCommand.addEventListener('click', async function(event) {
         const city = document.getElementById("city");
         const email = document.getElementById("email");
 
+        const totals = cart.map(function (item_cart) {
+            return item_cart.id
+        });
+
         const response = await fetch("http://localhost:3000/api/products/order", {
             method: 'POST',
             headers: {"Content-Type": "application/json"},
@@ -207,17 +211,16 @@ validCommand.addEventListener('click', async function(event) {
                     city: city.value,
                     email: email.value
                 },
-                products: cart
+                products: totals
             })
         });
 
-        console.log(response);
-        console.log(response.body);
-        console.log(response.body.contact);
-        console.log(response.body.products);
+        const products_command = await response.json();
+
+        console.log(products_command.orderId);
 
     } else {
-        console.log("Coordonnées refutées");
+        console.log("Coordonnées réfutées");
     }
 });
 // Fin validCommand
