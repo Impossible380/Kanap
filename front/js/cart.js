@@ -156,38 +156,58 @@ for (let i = 0 ; i < cart.length ; i++) {
 }
 // Fin boucle de la modification des quantités et de la suppression des produits
 
+const verifications  = [
+    {regex: /^[a-zA-Z- ]+$/g, input: document.getElementById('firstName')},
+    {regex: /^[a-zA-Z- ]+$/g, input: document.getElementById('lastName')},
+    {regex: /^[a-zA-Z0-9- ]+$/g, input: document.getElementById('address')},
+    {regex: /^[a-zA-Z0-9- ]+$/g, input: document.getElementById('city')},
+    {regex: /^[a-zA-Z0-9- ]+@[a-zA-Z- ]+\.[a-zA-Z- ]+$/g, input: document.getElementById('email')},
+]
 
-const changeFormInput = document.querySelectorAll(".cart__order__form__question input");
-const formInputRegexList = [/^[a-zA-Z- ]+$/g, /^[a-zA-Z- ]+$/g, /^[a-zA-Z0-9- ]+$/g, /^[a-zA-Z0-9- ]+$/g,
-/^[a-zA-Z0-9- ]+@[a-zA-Z- ]+\.[a-zA-Z- ]+$/g];
 
-let formInputRegexTestList = []
+verifications.forEach(element => {
+    element.input.addEventListener('change', () => {
+        const result = new RegExp(element.regex).test(element.input.value)
+        console.log("Test regex", element.regex, result)
+    })
+})
 
-// Début boucle de la modification des champs de saisie
-for (let i = 0 ; i < changeFormInput.length ; i++) {
-    console.log(formInputRegexList[i]);
+// const changeFormInput = document.querySelectorAll(".cart__order__form__question input");
+// const formInputRegexList = [/^[a-zA-Z- ]+$/g, /^[a-zA-Z- ]+$/g, 
+// /^[a-zA-Z0-9- ]+$/g, /^[a-zA-Z0-9- ]+$/g,
+// /^[a-zA-Z0-9- ]+@[a-zA-Z- ]+\.[a-zA-Z- ]+$/g];
 
-    formInputRegexTestList.push(false);
-    formInputRegexTestList[i] = formInputRegexList[i].test(changeFormInput[i].value);
+// let formInputRegexTestList = []
 
-    // Début changeFormInput
-    changeFormInput[i].addEventListener('change', function() {
-        formInputRegexTestList[i] = formInputRegexList[i].test(changeFormInput[i].value);
-        console.log("Test regex prénom", changeFormInput[i].value, formInputRegexTestList[i]);
-    });
-    // Fin changeFormInput
-}
+// // Début boucle de la modification des champs de saisie
+// for (let i = 0 ; i < changeFormInput.length ; i++) {
+//     console.log(formInputRegexList[i]);
+
+//     // formInputRegexTestList.push(false);
+//     // formInputRegexTestList[i] = formInputRegexList[i].test(changeFormInput[i].value);
+//     formInputRegexTestList[i] = false;
+
+//     // Début changeFormInput
+//     changeFormInput[i].addEventListener('change', function() {
+//         formInputRegexTestList[i] = new RegExp(formInputRegexList[i]).test(changeFormInput[i].value);
+//         console.log(formInputRegexList)
+//         console.log("Test regex prénom", changeFormInput[i].value, formInputRegexTestList[i]);
+//     });
+//     // Fin changeFormInput
+// }
 // Fin boucle de la modification des champs de saisie
 
 
 // On pointe sur l'élément de bouton
 const validCommand = document.getElementById("order");
 
+const testRegex = (element) => new RegExp(element.regex).test(element.input.value)
+
 // Début validCommand
-validCommand.addEventListener('click', async function(event) {
+validCommand.addEventListener('click', async (event) => {
     event.preventDefault();
 
-    if (formInputRegexTestList.every((element) => element === true)) {
+    if (verifications.every((element) => element.regex.test(element.input.value))) {
         console.log("Coordonnées validées");
 
         const firstName = document.getElementById("firstName");
@@ -196,9 +216,7 @@ validCommand.addEventListener('click', async function(event) {
         const city = document.getElementById("city");
         const email = document.getElementById("email");
 
-        const totals = cart.map(function (item_cart) {
-            return item_cart.id
-        });
+        const totals = cart.map((item_cart) => item_cart.id);
 
         const response = await fetch("http://localhost:3000/api/products/order", {
             method: 'POST',
@@ -225,8 +243,16 @@ validCommand.addEventListener('click', async function(event) {
 });
 // Fin validCommand
 
+// function add(a,b) {
+//     return a+b
+// }
+
+const add = (a, b) => a+b
 
 
+const c = add(1,5)
+
+console.log('c:', c)
 
 /* console.log("Coordonnées validées");
     const response = await fetch("http://localhost:3000/api/products/order", {
