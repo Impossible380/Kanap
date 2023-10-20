@@ -10,9 +10,6 @@ if (localStorage.length == 0 || localStorage.cart.length == 0) {
 // On affecte à la variable cart la conversion du string de localStorage.cart en object
 let cart = JSON.parse(localStorage.cart);
 
-
-// let articles_list = [];
-
 // On crée deux variables pour les totaux de la quantité et du prix
 let total_quantity = 0;
 let total_price = 0;
@@ -33,29 +30,6 @@ for (let i = 0 ; i < cart.length ; i++) {
     }
 
     console.log(products);
-
-    /* articles_list.push(`
-    <article class="cart__item" data-id="${item.id}" data-color="${item.color}">
-        <div class="cart__item__img">
-            <img src="${product.imageUrl}" alt="${product.altTxt}">
-        </div>
-        <div class="cart__item__content">
-            <div class="cart__item__content__description">
-                <h2>${product.name}</h2>
-                <p>${item.color}</p>
-                <p>${product.price} €</p>
-            </div>
-            <div class="cart__item__content__settings">
-                <div class="cart__item__content__settings__quantity">
-                    <p>Qté : </p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${item.quantity}">
-                </div>
-                <div class="cart__item__content__settings__delete">
-                    <p class="deleteItem">Supprimer</p>
-                </div>
-            </div>
-        </div>
-    </article>`); */
 
     document.getElementById("cart__items").innerHTML += `
     <article class="cart__item" data-id="${item.id}" data-color="${item.color}">
@@ -157,37 +131,46 @@ for (let i = 0 ; i < cart.length ; i++) {
 // Fin boucle de la modification des quantités et de la suppression des produits
 
 
-const changeFormInput = document.querySelectorAll(".cart__order__form__question input");
-const formInputRegexList = [/^[a-zA-Z- ]+$/g, /^[a-zA-Z- ]+$/g, /^[a-zA-Z0-9- ]+$/g, /^[a-zA-Z0-9- ]+$/g,
-/^[a-zA-Z0-9- ]+@[a-zA-Z- ]+\.[a-zA-Z- ]+$/g];
+const verifications = [
+    {regex: /^[a-zA-ZÀ-ÖÙ-öù-ÿ- ]+$/g, input: document.getElementById("firstName"), error_message: document.getElementById("firstNameErrorMsg")},
+    {regex: /^[a-zA-ZÀ-ÖÙ-öù-ÿ- ]+$/g, input: document.getElementById("lastName"), error_message: document.getElementById("lastNameErrorMsg")},
+    {regex: /^[a-zA-ZÀ-ÖÙ-öù-ÿ0-9- ]+$/g, input: document.getElementById("address"), error_message: document.getElementById("addressErrorMsg")},
+    {regex: /^[a-zA-ZÀ-ÖÙ-öù-ÿ0-9- ]+$/g, input: document.getElementById("city"), error_message: document.getElementById("cityErrorMsg")},
+    {regex: /^[a-zA-ZÀ-ÖÙ-öù-ÿ0-9- ]+@[a-zA-ZÀ-ÖÙ-öù-ÿ- ]+\.[a-zA-ZÀ-ÖÙ-öù-ÿ- ]+$/g, input: document.getElementById("email"),
+    error_message: document.getElementById("emailErrorMsg")}
+];
 
-let formInputRegexTestList = []
 
-// Début boucle de la modification des champs de saisie
-for (let i = 0 ; i < changeFormInput.length ; i++) {
-    console.log(formInputRegexList[i]);
-
-    formInputRegexTestList.push(false);
-    formInputRegexTestList[i] = formInputRegexList[i].test(changeFormInput[i].value);
-
-    // Début changeFormInput
-    changeFormInput[i].addEventListener('change', function() {
-        formInputRegexTestList[i] = formInputRegexList[i].test(changeFormInput[i].value);
-        console.log("Test regex prénom", changeFormInput[i].value, formInputRegexTestList[i]);
+verifications.forEach(element => {
+    element.input.addEventListener('change', () => {
+        const result = new RegExp(element.regex).test(element.input.value);
+        console.log("Test regex", element.regex, result);
+        
+        if (result) {
+            element.error_message.innerHTML = "";
+        } else {
+            element.error_message.innerHTML = "Caractère invalide";
+        }
     });
-    // Fin changeFormInput
-}
-// Fin boucle de la modification des champs de saisie
+});
+
+
+document.querySelector(".cart__order__form__submit").innerHTML = `
+<input type="submit" value="Commander !" id="order" href="./confirmation.html">` // .link("./confirmation.html");
 
 
 // On pointe sur l'élément de bouton
 const validCommand = document.getElementById("order");
 
-// Début validCommand
-validCommand.addEventListener('click', async function(event) {
-    event.preventDefault();
+console.log(document.getElementById("order"));
 
-    if (formInputRegexTestList.every((element) => element === true)) {
+// Début validCommand
+validCommand.addEventListener('click', async (event) => {
+    // event.preventDefault();
+
+    console.log(verifications);
+
+    if (verifications.every((element) => new RegExp(element.regex).test(element.input.value))) {
         console.log("Coordonnées validées");
 
         const firstName = document.getElementById("firstName");
@@ -196,9 +179,7 @@ validCommand.addEventListener('click', async function(event) {
         const city = document.getElementById("city");
         const email = document.getElementById("email");
 
-        const totals = cart.map(function (item_cart) {
-            return item_cart.id
-        });
+        const totals = cart.map((item_cart) => item_cart.id);
 
         const response = await fetch("http://localhost:3000/api/products/order", {
             method: 'POST',
@@ -228,23 +209,15 @@ validCommand.addEventListener('click', async function(event) {
 
 
 
-/* console.log("Coordonnées validées");
-    const response = await fetch("http://localhost:3000/api/products/order", {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            contact: {
-                firstName: 'Davy',
-                lastName: 'Gueudré',
-                address: '8 rue du poirier',
-                city: 'Orléans',
-                email: 'dgueudre@gmail.com'
-            },
-            products: ["415b7cacb65d43b2b5c1ff70f3393ad1"]
-        })
-    });
-*/
+/* function add(a, b) {
+    return a + b
+} */
 
+const add = (a, b) => a + b;
+
+const c = add(1, 5);
+
+console.log('c:', c);
 
 
 /*
