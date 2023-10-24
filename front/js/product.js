@@ -17,36 +17,6 @@ array.join(séparateur) : concaténer tous les éléments dans une seule chaîne
 // http://localhost:3000/api/products/order
 
 
-// Début onCartClick
-function onCartClick() {
-    const item = {};
-
-    item.id = id;
-    item.quantity = parseInt(quantityInput.value);
-    item.color = colorInput.value;
-
-    if ((item.quantity < 1 || item.quantity > 100) || item.color == "") {
-        return;
-    }
-
-    const cart_item_index = cart.findIndex(function(cart_item) {
-        return cart_item.id == item.id && cart_item.color == item.color;
-    });
-
-    if (cart_item_index === -1) {
-        cart.push(item);
-    } else {
-        cart[cart_item_index].quantity += item.quantity;
-    }
-
-    // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
-    localStorage.cart = JSON.stringify(cart);
-    
-    console.log(localStorage);
-}
-// Fin onCartClick
-
-
 const current_url = document.location.search;
 const searchParams_product = new URLSearchParams(current_url);
 const id = searchParams_product.get("id");
@@ -90,7 +60,43 @@ const cart = JSON.parse(localStorage.cart);
 console.log(localStorage.cart);
 console.log(cart);
 
-addToCart.addEventListener('click', onCartClick);
+
+document.querySelector("#addToCart").innerHTML += `<h6 id="addToCart_message"></h6>`;
+
+
+// Début onCartClick
+addToCart.addEventListener('click', function () {
+    const item = {};
+
+    item.id = id;
+    item.quantity = parseInt(quantityInput.value);
+    item.color = colorInput.value;
+
+    if ((item.quantity < 1 || item.quantity > 100) || item.color == "") {
+        document.querySelector("#addToCart_message").innerHTML = `Il faut choisir une couleur pour l'article et la quantité de ce dernier doit
+        être entre 1 et 100`;
+        return;
+    }
+
+    const cart_item_index = cart.findIndex(function(cart_item) {
+        return cart_item.id == item.id && cart_item.color == item.color;
+    });
+
+    if (cart_item_index === -1) {
+        cart.push(item);
+        document.querySelector("#addToCart_message").innerHTML = "article ajouté au panier";
+
+    } else {
+        cart[cart_item_index].quantity += item.quantity;
+        document.querySelector("#addToCart_message").innerHTML = "quantité de l'article augmentée";
+    }
+
+    // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
+    localStorage.cart = JSON.stringify(cart);
+    
+    console.log(localStorage);
+});
+// Fin onCartClick
 
 
 // number (examples : int, float), string, array, object (example : dict), function

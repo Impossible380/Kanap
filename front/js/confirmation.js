@@ -1,7 +1,11 @@
-const response = await fetch("http://localhost:3000/api/products/order");
-const products_command = await response.json();
+const current_url = document.location.search;
+const searchParams_product = new URLSearchParams(current_url);
+const id = searchParams_product.get("orderId");
 
-console.log(products_command);
+document.getElementById("orderId").innerHTML += `${id}`;
 
-console.log(document.getElementById("email"));
-console.log(document.getElementById("orderId"));
+
+
+
+/* Vider le panier après validation de la commande
+Afficher un message après l'ajout d'un élément au panier */

@@ -155,18 +155,17 @@ verifications.forEach(element => {
 });
 
 
-document.querySelector(".cart__order__form__submit").innerHTML = `
-<input type="submit" value="Commander !" id="order" href="./confirmation.html">` // .link("./confirmation.html");
-
-
 // On pointe sur l'élément de bouton
 const validCommand = document.getElementById("order");
 
 console.log(document.getElementById("order"));
 
+// const articles_list = deleteOfCart.closest("article.cart__item");
+
+
 // Début validCommand
 validCommand.addEventListener('click', async (event) => {
-    // event.preventDefault();
+    event.preventDefault();
 
     console.log(verifications);
 
@@ -199,6 +198,29 @@ validCommand.addEventListener('click', async (event) => {
         const products_command = await response.json();
 
         console.log(products_command.orderId);
+
+
+        for (let i = 0 ; i < cart.length ; i++) {
+            const article = deleteOfCart[i].closest("article.cart__item");
+            console.log(article);
+            article.remove();
+        }
+
+        cart = [];
+
+        // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
+        localStorage.cart = JSON.stringify(cart);
+        console.log({cart:cart});
+
+        // On met à jour les totaux du prix et de la quantité
+        total_quantity = 0;
+        total_price = 0;
+
+        // On affiche les nouveaux totaux du prix et de la quantité
+        document.getElementById("totalQuantity").innerHTML = total_quantity;
+        document.getElementById("totalPrice").innerHTML = total_price;
+
+        document.location.href = `confirmation.html?orderId=${products_command.orderId}`;
 
     } else {
         console.log("Coordonnées réfutées");
