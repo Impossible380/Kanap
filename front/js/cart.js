@@ -69,6 +69,11 @@ document.getElementById("totalPrice").innerHTML = total_price;
 const changeQuantity = document.querySelectorAll(".itemQuantity");
 const deleteOfCart = document.querySelectorAll(".deleteItem");
 
+// let addQuantityMessage = document.querySelectorAll(".cart__item__content__settings__quantity")
+
+changeQuantity.forEach((itemQuantityElement) => itemQuantityElement.innerHTML += `<h6 class="itemQuantityMessage">Yeah</h6>`);
+
+// let changeQuantityMessage = document.querySelectorAll(".itemQuantityMessage");
 
 // Début boucle de la modification des quantités et de la suppression des produits
 for (let i = 0 ; i < cart.length ; i++) {
@@ -79,6 +84,20 @@ for (let i = 0 ; i < cart.length ; i++) {
         let product = products.find(function(p, index) {
             return p._id === item.id;
         });
+
+        let new_quantity = parseInt(this.value);
+        console.log(new_quantity);
+
+        console.log(this.min, this.max);
+        
+        if (new_quantity < this.min || new_quantity > this.max) {
+            /* changeQuantityMessage[i].innerHTML = `La quantité de l'article doit
+            être comprise entre 1 et 100.`; */
+            changeQuantity[i].value = item.quantity;
+            console.log(`La quantité de l'article doit être comprise entre 1 et 100.`);
+            changeQuantity[i].innerHTML = `La quantité de l'article doit être comprise entre 1 et 100.`;
+            return;
+        }
 
         // On affecte l'ancienne quantité dans une nouvelle variable et la nouvelle dans la propriété quantity de l'item
         let ancient_quantity = item.quantity;

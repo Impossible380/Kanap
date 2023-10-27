@@ -61,7 +61,11 @@ console.log(localStorage.cart);
 console.log(cart);
 
 
-document.querySelector("#addToCart").innerHTML += `<h6 id="addToCart_message"></h6>`;
+document.getElementById("addToCart").innerHTML += `<h6 id="addToCartMessage"></h6>`;
+
+
+const item = {};
+item.quantity = 0;
 
 
 // Début onCartClick
@@ -72,9 +76,9 @@ addToCart.addEventListener('click', function () {
     item.quantity = parseInt(quantityInput.value);
     item.color = colorInput.value;
 
-    if ((item.quantity < 1 || item.quantity > 100) || item.color == "") {
-        document.querySelector("#addToCart_message").innerHTML = `Il faut choisir une couleur pour l'article et la quantité de ce dernier doit
-        être entre 1 et 100`;
+    if ((item.quantity < quantityInput.min || item.quantity > quantityInput.max) || item.color == "") {
+        document.getElementById("addToCartMessage").innerHTML = `Il faut choisir une couleur pour l'article et la quantité de ce dernier doit
+        être comprise entre 1 et 100.`;
         return;
     }
 
@@ -84,11 +88,22 @@ addToCart.addEventListener('click', function () {
 
     if (cart_item_index === -1) {
         cart.push(item);
-        document.querySelector("#addToCart_message").innerHTML = "article ajouté au panier";
+        document.getElementById("addToCartMessage").innerHTML = `article ajouté au panier`;
 
     } else {
+        if (cart[cart_item_index].quantity + item.quantity > quantityInput.max) {
+            document.getElementById("addToCartMessage").innerHTML = `La quantité totale de l'article doit être comprise entre 1 et 100.`;
+            return;
+        }
+
         cart[cart_item_index].quantity += item.quantity;
-        document.querySelector("#addToCart_message").innerHTML = "quantité de l'article augmentée";
+
+        document.getElementById("addToCartMessage").innerHTML = `quantité de l'article augmentée`;
+
+        if (cart[cart_item_index].quantity > quantityInput.max) {
+            document.getElementById("addToCartMessage").innerHTML = `La quantité totale de l'article doit être comprise entre 1 et 100.`;
+            return;
+        }
     }
 
     // On affecte à localStorage.cart la conversion de l'object de la variable cart en string
