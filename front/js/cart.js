@@ -46,12 +46,13 @@ for (let i = 0 ; i < cart.length ; i++) {
                 <div class="cart__item__content__settings__quantity">
                     <p>Qté : </p>
                     <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${item.quantity}">
+                    <h6 class="itemQuantityMessage"></h6>
                 </div>
                 <div class="cart__item__content__settings__delete">
                     <p class="deleteItem">Supprimer</p>
                 </div>
             </div>
-        </div>
+        </div> 
     </article>`
 
     // On ajoute au total de la quantité la quantité de l'article et à celui du prix le prix de l'article multiplié par la quantité de celui-ci
@@ -69,11 +70,9 @@ document.getElementById("totalPrice").innerHTML = total_price;
 const changeQuantity = document.querySelectorAll(".itemQuantity");
 const deleteOfCart = document.querySelectorAll(".deleteItem");
 
-// let addQuantityMessage = document.querySelectorAll(".cart__item__content__settings__quantity")
 
-changeQuantity.forEach((itemQuantityElement) => itemQuantityElement.innerHTML += `<h6 class="itemQuantityMessage">Yeah</h6>`);
-
-// let changeQuantityMessage = document.querySelectorAll(".itemQuantityMessage");
+let changeQuantityMessage = document.querySelectorAll(".itemQuantityMessage");
+console.log(changeQuantityMessage);
 
 // Début boucle de la modification des quantités et de la suppression des produits
 for (let i = 0 ; i < cart.length ; i++) {
@@ -91,11 +90,9 @@ for (let i = 0 ; i < cart.length ; i++) {
         console.log(this.min, this.max);
         
         if (new_quantity < this.min || new_quantity > this.max) {
-            /* changeQuantityMessage[i].innerHTML = `La quantité de l'article doit
-            être comprise entre 1 et 100.`; */
             changeQuantity[i].value = item.quantity;
             console.log(`La quantité de l'article doit être comprise entre 1 et 100.`);
-            changeQuantity[i].innerHTML = `La quantité de l'article doit être comprise entre 1 et 100.`;
+            changeQuantityMessage[i].innerHTML = `La quantité de l'article doit être comprise entre 1 et 100.`;
             return;
         }
 
